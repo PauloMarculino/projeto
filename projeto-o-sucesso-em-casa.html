@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Sucesso em Casa - Loja Online</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            overflow: hidden;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .card-content {
+            padding: 20px;
+        }
+        .card-content h3 {
+            color: #007bff;
+            margin: 0 0 10px;
+            font-size: 1.5em;
+        }
+        .card-content p {
+            color: #555;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+        .price {
+            font-size: 1.2em;
+            color: #28a745;
+            font-weight: bold;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 15px;
+            background-color: #007bff;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        footer {
+            background-color: #343a40;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+    </style>
+    <script>
+        async function fetchSheetData() {
+            const sheetID = '18SaznZFxKnoToMIF7jCBm9XEjHTVK5BnMdYyDaY6_Xg'; // Substitua pelo ID da sua planilha
+            const apiKey = 'AIzaSyDA_Tdum7c__DCVip0vaiU4QLwc01DEey0'; // Substitua pela sua chave de API
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/A1:E50?key=${apiKey}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.values) {
+                    let cards = "";
+                    const headers = data.values[0]; // Cabeçalho
+
+                    for (let i = 1; i < data.values.length; i++) {
+                        let row = data.values[i];
+                        let productName = row[0] || ""; // Nome do Produto
+                        let imageUrl = row[1] || "default.jpg"; // Imagem (URL) - usar default se não houver
+                        let description = row[2] || ""; // Descrição do Produto
+                        let price = row[3] || ""; // Preço
+                        let productLink = row[4] || "#"; // Link (URL)
+
+                        // Criar o conteúdo do cartão
+                        cards += `<div class="card">
+                                    <img src="${imageUrl}" alt="${productName}">
+                                    <div class="card-content">
+                                        <h3>${productName}</h3>
+                                        <p>${description}</p>
+                                        <p class="price">${price}</p>
+                                        <a href="${productLink}" class="button" target="_blank">Comprar Agora</a>
+                                    </div>
+                                  </div>`;
+                    }
+
+                    document.getElementById("sheetData").innerHTML = cards;
+                } else {
+                    document.getElementById("sheetData").innerHTML = "Nenhum dado encontrado.";
+                }
+            } catch (error) {
+                console.error('Erro ao buscar os dados:', error);
+                document.getElementById("sheetData").innerHTML = "Erro ao carregar os dados.";
+            }
+        }
+
+        window.onload = fetchSheetData;
+    </script>
+</head>
+<body>
+    <header>
+        <h1>O Sucesso em Casa - Loja Online</h1>
+    </header>
+    <div id="sheetData" class="container">Carregando...</div>
+    <footer>
+        <p>&copy; 2024 O Sucesso em Casa. Todos os direitos reservados.</p>
+    </footer>
+</body>
+</html>
